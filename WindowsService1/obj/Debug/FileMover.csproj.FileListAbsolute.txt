@@ -1,0 +1,7 @@
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\bin\Debug\WindowsService1.exe.config
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\bin\Debug\WindowsService1.exe
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\bin\Debug\WindowsService1.pdb
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\obj\Debug\FileMover.csprojAssemblyReference.cache
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\obj\Debug\FileMover.csproj.CoreCompileInputs.cache
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\obj\Debug\WindowsService1.exe
+D:\PROJETOS\(a) Mover ficheiros duma pasta para outra\WindowsService1\WindowsService1\obj\Debug\WindowsService1.pdb
