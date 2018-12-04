@@ -7,7 +7,7 @@ namespace WindowsService1
     static class Program
     {
         /// <summary>
-        /// Just move pdf files from folder in path1 to folder in path2
+        /// Just move pdf files from folder in path1 to folder in path2 timing 30s to 30s
         /// @author rundeploy
         /// @date 4/12/2018
         /// </summary>
@@ -18,13 +18,18 @@ namespace WindowsService1
             aTimer.Interval = 30000;
             aTimer.Enabled = true;
 
-            Console.WriteLine("Press \'q\' to quit the sample."); // Mod this in order to run always
-            while (Console.Read() != 'q') ;
-
+            Console.WriteLine("Press \'q\' to quit the sample."); 
+            while (Console.Read() != 'q') ; // Mod this in order to run forever
         }
 
+        /// <summary>
+        /// Actual method that moves the files
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="a"></param>
         private static void OnTimedEvent(object source, ElapsedEventArgs a)
         {
+            //[TODO] ask user the FROM folder and the TO folder files to move
             string path1 = @"D:\Downloads\Pasta1"; // Specify folder from you want to move files
             string path2 = @"D:\Downloads\Pasta2"; // Specify folder where you want the files be moved to
 
@@ -51,9 +56,6 @@ namespace WindowsService1
                     File.Move(Path.Combine(path1, name), Path.Combine(path2, name));
                     Console.WriteLine("{0} was moved to {1}.", path1, path2);
 
-                    
-
-
                     // See if the original exists now.
                     if (File.Exists(path1 + pdfFileNames))
                     {
@@ -72,7 +74,12 @@ namespace WindowsService1
             }
         }
 
-
+        /// <summary>
+        /// Check file names from the folder indicated in the path and return an array of file names
+        /// </summary>
+        /// <param name="path">The path to the origin folder where files are and should be moved</param>
+        /// <param name="filtro">files format</param>
+        /// <returns>return a list of file names in a form of an array</returns>
         private static string[] GetFileNames(string path, string filtro)
         {
             var pdfFiles = new DirectoryInfo(path).GetFiles(filtro);
