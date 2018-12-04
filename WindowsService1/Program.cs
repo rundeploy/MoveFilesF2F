@@ -15,7 +15,7 @@ namespace WindowsService1
         {
             Timer aTimer = new Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            aTimer.Interval = 30000;
+            aTimer.Interval = 5000;
             aTimer.Enabled = true;
 
             Console.WriteLine("Press \'q\' to quit the sample."); 
@@ -34,6 +34,7 @@ namespace WindowsService1
             string path2 = @"D:\Downloads\Pasta2"; // Specify folder where you want the files be moved to
 
             var pdfFileNames = GetFileNames(path1, "*.pdf");
+            
 
             try
             {
@@ -43,11 +44,16 @@ namespace WindowsService1
                     {
                         Directory.CreateDirectory(path2);
                     }
-
+                    var concNumber = 0;
                     // Ensure that the target does not exist.
                     if (File.Exists(Path.Combine(path2, name)))
                     {
-                        File.Delete(Path.Combine(path2, name));
+                        //File.Delete(Path.Combine(path2, name));
+                        //File.Create(Path.Combine(path2, name + concNumber++));
+                        //File.Copy(name, name + concNumber++);
+                        string[] newName = name.Split('.'); //Criar um metodo auxiliar e recursivo para verificar o nome
+                        File.Move(Path.Combine(path1, name), Path.Combine(path2, newName[0] + concNumber++ + ".pdf"));
+                        Console.WriteLine("{0} was moved to {1}.", path1, path2);
                     }
 
                     //[TODO] check if there are arleady files with the same name and same format then to do something about it before moving
