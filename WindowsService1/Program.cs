@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace WindowsService1
 {
@@ -15,15 +9,26 @@ namespace WindowsService1
         /// <summary>
         /// Just move pdf files from folder in path1 to folder in path2
         /// @author rundeploy
+        /// @date 4/12/2018
         /// </summary>
         static void Main()
         {
-            string path1 = @"D:\Downloads\Pasta1";
-            string path2 = @"D:\Downloads\Pasta2";
+            Timer aTimer = new Timer();
+            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            aTimer.Interval = 30000;
+            aTimer.Enabled = true;
 
+            Console.WriteLine("Press \'q\' to quit the sample."); // Mod this in order to run always
+            while (Console.Read() != 'q') ;
+
+        }
+
+        private static void OnTimedEvent(object source, ElapsedEventArgs a)
+        {
+            string path1 = @"D:\Downloads\Pasta1"; // Specify folder from you want to move files
+            string path2 = @"D:\Downloads\Pasta2"; // Specify folder where you want the files be moved to
 
             var pdfFileNames = GetFileNames(path1, "*.pdf");
-
 
             try
             {
@@ -40,9 +45,13 @@ namespace WindowsService1
                         File.Delete(Path.Combine(path2, name));
                     }
 
+                    //[TODO] check if there are arleady files with the same name and same format then to do something about it before moving
+
                     // Move the file.
                     File.Move(Path.Combine(path1, name), Path.Combine(path2, name));
                     Console.WriteLine("{0} was moved to {1}.", path1, path2);
+
+                    
 
 
                     // See if the original exists now.
@@ -61,8 +70,8 @@ namespace WindowsService1
             {
                 Console.WriteLine("The process failed: {0}", e.ToString());
             }
-
         }
+
 
         private static string[] GetFileNames(string path, string filtro)
         {
