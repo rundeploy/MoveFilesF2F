@@ -11,6 +11,12 @@ namespace WindowsService1
         /// @author rundeploy
         /// @date 4/12/2018
         /// </summary>
+        
+
+        //[TODO] ask user the FROM folder and the TO folder files to move
+        private static string path1 = @"D:\Downloads\Pasta1"; // Specify folder from you want to move files
+        private static string path2 = @"D:\Downloads\Pasta2"; // Specify folder where you want the files be moved to
+
         static void Main()
         {
             Timer aTimer = new Timer();
@@ -29,9 +35,7 @@ namespace WindowsService1
         /// <param name="a"></param>
         private static void OnTimedEvent(object source, ElapsedEventArgs a)
         {
-            //[TODO] ask user the FROM folder and the TO folder files to move
-            string path1 = @"D:\Downloads\Pasta1"; // Specify folder from you want to move files
-            string path2 = @"D:\Downloads\Pasta2"; // Specify folder where you want the files be moved to
+            
 
             var pdfFileNames = GetFileNames(path1, "*.pdf");
             
@@ -44,19 +48,22 @@ namespace WindowsService1
                     {
                         Directory.CreateDirectory(path2);
                     }
-                    var concNumber = 0;
-                    // Ensure that the target does not exist.
+                    //[TODO] check if there are arleady files with the same name and same format then to do something about it before moving
                     if (File.Exists(Path.Combine(path2, name)))
                     {
-                        //File.Delete(Path.Combine(path2, name));
-                        //File.Create(Path.Combine(path2, name + concNumber++));
-                        //File.Copy(name, name + concNumber++);
-                        string[] newName = name.Split('.'); //Criar um metodo auxiliar e recursivo para verificar o nome
-                        File.Move(Path.Combine(path1, name), Path.Combine(path2, newName[0] + concNumber++ + ".pdf"));
-                        Console.WriteLine("{0} was moved to {1}.", path1, path2);
+                        if (alterDupFileName(path2, name))
+                        {
+                            Console.WriteLine("{0} was moved to {1}.", path1, path2);
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Something went wrong altering the already existing file with the same name in destination folder");
+                            return;
+                        }
                     }
-
-                    //[TODO] check if there are arleady files with the same name and same format then to do something about it before moving
+                    
+                    
 
                     // Move the file.
                     File.Move(Path.Combine(path1, name), Path.Combine(path2, name));
@@ -78,6 +85,73 @@ namespace WindowsService1
             {
                 Console.WriteLine("The process failed: {0}", e.ToString());
             }
+        }
+
+        private static bool alterDupFileName(string path2, string name)
+        {
+            var concNumber = 0;
+            bool alterNameSuccessed = false;
+            string alteredName = "";
+
+            char[] charArray = name.ToCharArray();
+            string[] splitName = name.Split('.', '(', ')');
+            
+            
+
+            if (int.TryParse(splitName[splitName.Length - 3], out int n)) //se antes do ponto onde se define o tipo de ficheiro estiver entre parentesis um valor do tipo int
+            {
+                var valorEmParentesis = splitName[splitName.Length - 3];
+                int valorInteiro = Int32.Parse(valorEmParentesis);
+                valorInteiro++;
+
+                
+                
+            }
+            for (int i = charArray.Length-4; i > 0; i--)
+            {
+                if (charArray[i].Equals('('))
+                {
+                    
+                    Console.WriteLine(i);
+                    return true;
+                }
+                else
+                {
+                    
+                }
+            }
+            
+
+            //var isNumeric = int.TryParse(splitName[splitName.Length-3], out int n);
+            //if (isNumeric)
+            //{
+            //    var x = splitName[splitName.Length - 3];
+            //    int z = Int32.Parse(x);
+            //    z++;
+            //    for (int i = 0; i< splitName.Length-3; i++)
+            //    {
+            //        alteredName = alteredName + "(" + splitName[i]+ ")";
+            //    }
+            //    alteredName = alteredName + "(" + z + ")" + ".pdf";
+
+            //}
+            //else
+            //{
+            //    alteredName = splitName[0] + "(" + concNumber++ + ")" + ".pdf";
+            //}
+
+
+
+            if (File.Exists(Path.Combine(path2, alteredName)))
+            {
+                alterDupFileName(path2, alteredName);
+            }
+            else
+            {
+                File.Move(Path.Combine(path1, name), Path.Combine(path2, alteredName));
+                alterNameSuccessed = true;
+            }
+            return alterNameSuccessed;
         }
 
         /// <summary>
