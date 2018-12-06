@@ -86,65 +86,70 @@ namespace WindowsService1
                 Console.WriteLine("The process failed: {0}", e.ToString());
             }
         }
+        public static bool IsNumericType(this object o)
+        {
+            switch (Type.GetTypeCode(o.GetType()))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
         private static bool alterDupFileName(string path2, string name)
         {
-            var concNumber = 0;
+            
             bool alterNameSuccessed = false;
             string alteredName = "";
+            int valueIsNumeric = 0;
 
-            char[] charArray = name.ToCharArray();
             string[] splitName = name.Split('.', '(', ')');
-            
-            
-
-            if (int.TryParse(splitName[splitName.Length - 3], out int n)) //se antes do ponto onde se define o tipo de ficheiro estiver entre parentesis um valor do tipo int
+            //[nome] [ ] [pdf]
+            //[0]    [1] [2] length = 3
+            //se antes do ponto onde se define o tipo de ficheiro estiver entre parentesis um valor do tipo int entao incrementar esse valor
+            //int.TryParse(splitName[splitName.Length - 3], out int result);
+            if (splitName.Length >= 3)
             {
-                var valorEmParentesis = splitName[splitName.Length - 3];
-                int valorInteiro = Int32.Parse(valorEmParentesis);
-                valorInteiro++;
+                if (int.TryParse(splitName[splitName.Length - 3], out int result) && IsNumericType(result))
+                {
+                    //Obter o que esta na posicao array.length-3 do nome do fich xpto(0).pdf -> [xpto] [0] [""] [pdf]
+                    var valInParentesis = splitName[splitName.Length - 3];
+                    valueIsNumeric = Int32.Parse(valInParentesis); //converter para inteiro esse valor encontrado na posicao array.length-3
 
-                
-                
-            }
-            for (int i = charArray.Length-4; i > 0; i--)
-            {
-                if (charArray[i].Equals('('))
-                {
-                    
-                    Console.WriteLine(i);
-                    return true;
-                }
-                else
-                {
-                    
+
                 }
             }
             
+            valueIsNumeric++;
+            alteredName = splitName[0]; // alteredName = [xpto]
 
-            //var isNumeric = int.TryParse(splitName[splitName.Length-3], out int n);
-            //if (isNumeric)
-            //{
-            //    var x = splitName[splitName.Length - 3];
-            //    int z = Int32.Parse(x);
-            //    z++;
-            //    for (int i = 0; i< splitName.Length-3; i++)
-            //    {
-            //        alteredName = alteredName + "(" + splitName[i]+ ")";
-            //    }
-            //    alteredName = alteredName + "(" + z + ")" + ".pdf";
+            // se houver mais alguma coisa entre [xpto] e [0] entao concatena no alteredName
+            if (splitName.Length - 4 > 1) 
+            {
+                for (int i = 1; i < splitName.Length - 3; i++)
+                {
+                    alteredName = alteredName + splitName[i] ;
+                }
+            }
 
-            //}
-            //else
-            //{
-            //    alteredName = splitName[0] + "(" + concNumber++ + ")" + ".pdf";
-            //}
-
+            alteredName = alteredName + "(" + valueIsNumeric + ")" + ".pdf";
+            
 
 
             if (File.Exists(Path.Combine(path2, alteredName)))
             {
-                alterDupFileName(path2, alteredName);
+                alterDupFileName(path2, alteredName );
             }
             else
             {
