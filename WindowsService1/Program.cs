@@ -22,14 +22,15 @@ namespace WindowsService1
         /// </summary>
         static void Main()
         {
-            
-            Timer aTimer = new Timer();
-            aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
-            aTimer.Interval = 5000;
-            aTimer.Enabled = true;
 
-            Console.WriteLine("Press \'q\' to quit the sample."); 
-            while (Console.Read() != 'q') ; // Mod this in order to run forever
+            //Timer aTimer = new Timer();
+            //aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            //aTimer.Interval = 5000;
+            //aTimer.Enabled = true;
+            metodo();
+
+            //Console.WriteLine("Press \'q\' to quit the sample."); 
+            //while (Console.Read() != 'q') ; // Mod this in order to run forever
         }
 
         /// <summary>
@@ -37,7 +38,9 @@ namespace WindowsService1
         /// </summary>
         /// <param name="source"></param>
         /// <param name="a"></param>
-        private static void OnTimedEvent(object source, ElapsedEventArgs a)
+        //private static void OnTimedEvent(object source, ElapsedEventArgs a)
+
+        private static void metodo()
         {
             //Guarantee that folders do exist
             if (!Directory.Exists(path1))
@@ -128,9 +131,9 @@ namespace WindowsService1
 
             string alteredName = actuallyAlterDupName(name);
 
-            while(File.Exists(Path.Combine(destPath, alteredName)))
+            if (File.Exists(Path.Combine(destPath, alteredName)))
             {
-                GetNotDuplicatedFileName(destPath, alteredName );
+                return GetNotDuplicatedFileName(destPath, alteredName );
             }
             
             return alteredName;
